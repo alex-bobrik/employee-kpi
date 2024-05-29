@@ -1,0 +1,4 @@
+@startuml ClassesEx
+class Kpi{}
+class Employee
+@enduml

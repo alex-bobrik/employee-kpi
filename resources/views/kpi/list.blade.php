@@ -4,8 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Employee List</title>
-
+        <title>KPI List</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -39,22 +38,15 @@
             .container {
                 margin-top: 70px;
             }
-
-            .new-employee {
-                margin-bottom: 5px;
-                float: right;
-            }
         </style>
-
-        
     </head>
     <body>
 
-         <!-- Navbar -->
-         @extends('layouts.navbar');
-         @extends('employee.update-employee');
-         @extends('employee.delete-employee');
 
+         <!-- Navbar -->
+         @extends('layouts.navbar')
+         @extends('kpi.update-kpi')
+         @extends('kpi.delete-kpi')
 
          {{ $isAdmin = auth()->user()->role == 'admin' }}
 
@@ -64,57 +56,52 @@
                         type="button"
                         class="btn btn-primary add-wish-btn"
                         data-toggle="modal"
-                        data-target="#updateEmployeeModal"
+                        data-target="#updateKpiModal"
                         onClick="resetForm()"
                     >
-                        Add new employee
+                        Add new KPI
                     </button>
             @endif
             
-            <table class="table table-striped" id="employeeTable">
+            <table class="table table-striped" id="kpiTable">
                 <thead>
                     <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Department</th>
-                        <th>Base Value</th>
-                        <th>Avg KPI</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Weight</th>
+                        @if ($isAdmin)
                         <th>Actions</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($employeeList as $employee)
+                    @foreach ($kpiList as $kpi)
                         <tr>
-                            <td>{{ $employee->firstname }}</td>
-                            <td>{{ $employee->lastname }}</td>
-                            <td>{{ $employee->department }}</td>
-                            <td>{{ $employee->base_value }}</td>
-                            <td>{{ $employee->averageKpi() }}</td>
-                            <td>
-                                <a href="{{ route('employeeProfile', $employee->employee_id) }}">
-                                    Profile
-                                </a>
-                                @if ($isAdmin)
-                                    <button
-                                    value="{{$employee->employee_id}}"
+                            <td>{{ $kpi->name }}</td>
+                            <td>{{ $kpi->description }}</td>
+                            <td>{{ $kpi->weight_value }}%</td>
+                            @if ($isAdmin)
+                                <td>
+                                <button
+                                    value="{{$kpi->kpi_id}}"
                                     class="btn btn-info edit-btn"
                                     data-toggle="modal"
-                                    data-target="#updateEmployeeModal"
-                                    onClick="setDataToModal({{$employee}})"
+                                    data-target="#updateKpiModal"
+                                    onClick="setDataToModal({{$kpi}})"
                                 >
                                     <i class="fa fa-pencil"></i>
                                 </button>
                                 <button
                                         class="btn btn-danger"
                                         data-toggle="modal"
-                                        data-target="#deleteEmployeeModal"
-                                        onClick="setDeleteId({{$employee->employee_id}})"
+                                        data-target="#deleteKpiModal"
+                                        onClick="setDeleteId({{$kpi->kpi_id}})"
                                     >
                                         <i class="fa fa-trash"></i>
                                     </button>
-                                @endif
-                                
                             </td>
+                            @endif
+                            
                         </tr>
                         
                     @endforeach
@@ -122,40 +109,39 @@
             </table>
         </div>
 
-
         <script>
             $(document).ready(function() {
-                $('#employeeTable').DataTable({
+                $('#kpiTable').DataTable({
                     "aaSorting": [],
                     paging: true,
                     scrollCollapse: true,
                     scrollY: '500px',
                     columnDefs: [{
                         orderable: false,
-                        targets: [5],
+                        targets: [3],
                     }]
                 });
-            });
+            })
     
         </script>
 
+
 <script>
-    function setDeleteId(employeeId) {
-        document.getElementById('employee_delete_id').value = employeeId;
+    function setDeleteId(kpiId) {
+        document.getElementById('kpi_delete_id').value = kpiId;
     }
 
-    function setDataToModal(employee) {
-        $('#employee_firstname').val(employee.firstname);
-        $('#employee_lastname').val(employee.lastname);
-        $('#employee_department').val(employee.department);
-        $('#employee_base_value').val(employee.base_value);
-        $('#employee_id').val(employee.employee_id);
+    function setDataToModal(kpi) {
+        $('#kpi_name').val(kpi.name);
+        $('#kpi_description').val(kpi.description);
+        $('#kpi_weight').val(kpi.weight_value);
+        $('#kpi_id').val(kpi.kpi_id);
     }
 
     function resetForm() {
-        let form = $('#updateEmployeeForm');
+        let form = $('#updateKpiForm');
         form[0].reset();
-        $('#employee_id').val('');
+        $('#kpi_id').val('');
     }
 </script>
     </body>

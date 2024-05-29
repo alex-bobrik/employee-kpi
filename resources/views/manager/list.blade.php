@@ -52,68 +52,50 @@
 
          <!-- Navbar -->
          @extends('layouts.navbar');
-         @extends('employee.update-employee');
-         @extends('employee.delete-employee');
+         @extends('manager.update-manager');
+         @extends('manager.delete-manager');
 
 
-         {{ $isAdmin = auth()->user()->role == 'admin' }}
 
         <div class="container">
-            @if ($isAdmin)
-                <button
+            <button
                         type="button"
                         class="btn btn-primary add-wish-btn"
                         data-toggle="modal"
-                        data-target="#updateEmployeeModal"
+                        data-target="#updateManagerModal"
                         onClick="resetForm()"
                     >
-                        Add new employee
+                        Add new manager
                     </button>
-            @endif
-            
             <table class="table table-striped" id="employeeTable">
                 <thead>
                     <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Department</th>
-                        <th>Base Value</th>
-                        <th>Avg KPI</th>
+                        <th>Name</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($employeeList as $employee)
+                    @foreach ($managers as $manager)
                         <tr>
-                            <td>{{ $employee->firstname }}</td>
-                            <td>{{ $employee->lastname }}</td>
-                            <td>{{ $employee->department }}</td>
-                            <td>{{ $employee->base_value }}</td>
-                            <td>{{ $employee->averageKpi() }}</td>
+                            <td>{{ $manager->username }}</td>
                             <td>
-                                <a href="{{ route('employeeProfile', $employee->employee_id) }}">
-                                    Profile
-                                </a>
-                                @if ($isAdmin)
-                                    <button
-                                    value="{{$employee->employee_id}}"
+                                <button
+                                    value="{{$manager->user_id}}"
                                     class="btn btn-info edit-btn"
                                     data-toggle="modal"
-                                    data-target="#updateEmployeeModal"
-                                    onClick="setDataToModal({{$employee}})"
+                                    data-target="#updateManagerModal"
+                                    onClick="setDataToModal({{$manager}})"
                                 >
                                     <i class="fa fa-pencil"></i>
                                 </button>
                                 <button
                                         class="btn btn-danger"
                                         data-toggle="modal"
-                                        data-target="#deleteEmployeeModal"
-                                        onClick="setDeleteId({{$employee->employee_id}})"
+                                        data-target="#deleteManagerModal"
+                                        onClick="setDeleteId({{$manager->user_id}})"
                                     >
                                         <i class="fa fa-trash"></i>
                                     </button>
-                                @endif
-                                
                             </td>
                         </tr>
                         
@@ -132,7 +114,7 @@
                     scrollY: '500px',
                     columnDefs: [{
                         orderable: false,
-                        targets: [5],
+                        targets: [1],
                     }]
                 });
             });
@@ -140,22 +122,20 @@
         </script>
 
 <script>
-    function setDeleteId(employeeId) {
-        document.getElementById('employee_delete_id').value = employeeId;
+    function setDeleteId(managerId) {
+        document.getElementById('manager_delete_id').value = managerId;
     }
 
-    function setDataToModal(employee) {
-        $('#employee_firstname').val(employee.firstname);
-        $('#employee_lastname').val(employee.lastname);
-        $('#employee_department').val(employee.department);
-        $('#employee_base_value').val(employee.base_value);
-        $('#employee_id').val(employee.employee_id);
+    function setDataToModal(manager) {
+        $('#username').val(manager.username);
+        $('#password').val('');
+        $('#manager_id').val(manager.user_id);
     }
 
     function resetForm() {
-        let form = $('#updateEmployeeForm');
+        let form = $('#updateManagerForm');
         form[0].reset();
-        $('#employee_id').val('');
+        $('#manager_id').val('');
     }
 </script>
     </body>
