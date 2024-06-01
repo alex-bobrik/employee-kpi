@@ -57,7 +57,17 @@
         @extends('layouts.navbar');
         @extends('employee.delete-result');
 
+        {{ $isAdmin = auth()->user()->role == 'admin' }}
+
         <div class="container">
+            @if(Session::has('message'))
+                <div class="alert alert-{{Session::get('message')['status']}} alert-dismissible fade show" role="alert">
+                    <span>{{ Session::get('message')['text'] }}</span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
             <div class="employee-profile">
                 <div class="employee-fio">
                     <span><b>{{$employee->firstname}}</b></span><br>
@@ -90,7 +100,9 @@
                         <th>kpi name</th>
                         <th>kpi value</th>
                         <th>measured bonus</th>
+                        @if ($isAdmin)
                         <th>action</th>
+                        @endif
                     </thead>
                     <tbody>
                         @foreach ($employee->kpiResults()->get() as $kpiResult)
@@ -101,6 +113,7 @@
                                 <td>{{ $kpiResult->kpi()->name }}</td>
                                 <td>{{ $kpiResult->kpi_value }}</td>
                                 <td>{{ $kpiResult->value }}</td>
+                                @if ($isAdmin)
                                 <td>
                                     <button
                                         class="btn btn-danger"
@@ -111,6 +124,8 @@
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
+                                @endif
+                                
                             </tr>
                         @endforeach
                     </tbody>

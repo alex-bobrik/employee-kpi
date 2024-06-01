@@ -31,16 +31,6 @@ class EmployeeController extends Controller
     {
         $employee = Employee::findOrFail($id);
 
-        // $user = User::create([
-        //     'username' => 'manager2',
-        //     'role' => 'manager',
-        //     'password' => Hash::make('manager2')
-        // ]);
-
-        // dump($employee->getGroupedBonus());die;
-
-        // $bonus = $employee->getBonusByPeriod('2023-01-01', '2026-01-01');
-
         return view("employee.profile", [
             "employee" => $employee
         ]);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\BonusService;
 use App\Models\Employee;
 use App\Models\EmployeeKpiResult;
 use App\Models\Kpi;
@@ -11,6 +12,14 @@ use Illuminate\Support\Facades\Date;
 
 class EmployeeKpiResultController extends Controller
 {
+
+    private $bonusService;
+
+    public function __construct(BonusService $bonusService)
+    {
+        $this->bonusService = $bonusService;
+    }
+
     public function index($employeeId)
     {
         $employee = Employee::findOrFail($employeeId);
@@ -36,7 +45,8 @@ class EmployeeKpiResultController extends Controller
                 'user_id' => Auth::user()->user_id,
                 'kpi_id' => $kpiId,
                 'kpi_value' => (float)$kpiValue,
-                'value' => (float)$employee->base_value * (float)$kpiValue * ((float)$kpi->weight_value / 100),
+                'value' => $this->bonusService->calculateBonus((float)$kpiValue, (float)$employee->base_value, (float)$kpi->weight_value),
+                // 'value' => (float)$employee->base_value * (float)$kpiValue * ((float)$kpi->weight_value / 100),
                 'date_measured' => Date::now()
             ];
 
@@ -44,7 +54,7 @@ class EmployeeKpiResultController extends Controller
         }
 
         return redirect()->route("employeeProfile", ['id' => $employeeId])->with("message", [
-            'text' => 'KPI added',
+            'text' => 'KPI result added',
             'status' => 'success'
         ]);
     }
@@ -56,7 +66,7 @@ class EmployeeKpiResultController extends Controller
         }
 
         return redirect()->route("employeeProfile", ['id' => $request->get('result_employee_id')])->with("message", [
-            'text' => 'KPI deleted',
+            'text' => 'KPI result deleted',
             'status' => 'success'
         ]);
     }

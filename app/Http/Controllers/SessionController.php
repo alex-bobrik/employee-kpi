@@ -22,9 +22,14 @@ class SessionController extends Controller
             return redirect()->route('employeeList');
         }
 
-        throw ValidationException::withMessages([
-            'username' => [trans('auth.failed')],
+        return redirect()->route("loginForm")->with("message", [
+            'text' => 'Wrong creds',
+            'status' => 'danger'
         ]);
+
+        // throw ValidationException::withMessages([
+        //     'username' => [trans('auth.failed')],
+        // ]);
     }
 
     public function logout(Request $request)

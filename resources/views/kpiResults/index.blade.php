@@ -52,6 +52,14 @@
         @extends('layouts.navbar')
 
         <div class="container">
+            @if(Session::has('message'))
+                <div class="alert alert-{{Session::get('message')['status']}} alert-dismissible fade show" role="alert">
+                    <span>{{ Session::get('message')['text'] }}</span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
             <div class="employee-info">
                 New KPI Results for <b>{{ $employee->firstname }} {{ $employee->lastname }}</b>
             </div>
@@ -69,8 +77,6 @@
 
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
-            
-
         </div>
     </body>
 </html>
