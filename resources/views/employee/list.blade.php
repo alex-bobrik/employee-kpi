@@ -85,7 +85,9 @@
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Department</th>
+                        @if ($isAdmin)
                         <th>Base Value</th>
+                        @endif
                         <th>Avg KPI</th>
                         <th>Actions</th>
                     </tr>
@@ -96,8 +98,10 @@
                             <td>{{ $employee->firstname }}</td>
                             <td>{{ $employee->lastname }}</td>
                             <td>{{ $employee->department }}</td>
+                            @if ($isAdmin)
                             <td>{{ $employee->base_value }}</td>
-                            <td>{{ $employee->averageKpi() }}</td>
+                            @endif
+                            <td>{{ number_format($employee->averageKpi(), 1) }}%</td>
                             <td>
                                 <a href="{{ route('employeeProfile', $employee->employee_id) }}">
                                     Profile
@@ -138,10 +142,6 @@
                     paging: true,
                     scrollCollapse: true,
                     scrollY: '500px',
-                    columnDefs: [{
-                        orderable: false,
-                        targets: [5],
-                    }]
                 });
             });
     

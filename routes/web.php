@@ -49,6 +49,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('kpi-results-save/{employeeId}', [\App\Http\Controllers\EmployeeKpiResultController::class, 'store'])->name('kpiResult.store');
     Route::post('/delete-result', [\App\Http\Controllers\EmployeeKpiResultController::class, 'delete'])->name('delete-result');
 
+    Route::get('salary-new/{employeeId}', [\App\Http\Controllers\SalaryController::class, 'index'])->name('newSalary');
+    Route::post('salary-save/{employeeId}', [\App\Http\Controllers\SalaryController::class, 'store'])->name('salary.store');
+
+
 });
 
 

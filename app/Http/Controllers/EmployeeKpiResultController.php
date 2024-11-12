@@ -6,6 +6,7 @@ use App\Http\Helpers\BonusService;
 use App\Models\Employee;
 use App\Models\EmployeeKpiResult;
 use App\Models\Kpi;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
@@ -24,9 +25,16 @@ class EmployeeKpiResultController extends Controller
     {
         $employee = Employee::findOrFail($employeeId);
 
+        $lastCalculatedBonus = Carbon::parse($this->bonusService->getLastCalculatedBonus($employeeId));
+        $currentDate = Carbon::now();
+
+        $daysSinceLastCalculation = $lastCalculatedBonus->diffInDays($currentDate);
+
         return view('kpiResults.index', [
             'employee' => $employee,
             'kpis' => Kpi::all(),
+            'lastCalculatedBonus' => $lastCalculatedBonus->format('d M Y'),
+            'daysSinceLastCalculation' => $daysSinceLastCalculation,
         ]);
     }
 

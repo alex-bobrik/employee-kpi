@@ -1,4 +1,3 @@
-{{ $isAdmin = auth()->user()->role == 'admin' }}
 
 
 <nav class="navbar navbar-expand-xl navbar-dark bg-primary fixed-top">
@@ -18,7 +17,7 @@
                     KPI
                 </a>
             </li>
-            @if ($isAdmin)
+            @if (auth()->user()->role == 'admin' )
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('managerList') }}">
                     Managers
@@ -28,11 +27,6 @@
             
         </ul>
         <ul class="navbar-nav ml-auto">
-{{--            <li class="nav-item">--}}
-{{--                <a class="nav-link" href="{{route('candiesListView')}}">--}}
-{{--                    Profile--}}
-{{--                </a>--}}
-{{--            </li>--}}
             <li class="nav-item">
                 <a class="nav-link" href="{{route('logout')}}">
                     Logout

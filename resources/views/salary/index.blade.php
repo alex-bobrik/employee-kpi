@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>New KPI Result</title>
+        <title>New Salary</title>
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
@@ -63,40 +63,61 @@
                 </div>
             @endif
             <div class="employee-info">
-                New KPI Results for <b>{{ $employee->firstname }} {{ $employee->lastname }}</b>
+                New Salary for <b>{{ $employee->firstname }} {{ $employee->lastname }}</b>
             </div>
 
             <div class="preview-info">
-                <span>Last KPI Calculcated: {{$lastCalculatedBonus}} ({{$daysSinceLastCalculation}} days ago)</span>
+                <span>Last Salary Date: {{$lastCalculatedSalary}} ({{$daysSinceLastCalculation}} days ago)</span>
+                <br>
+                <span>Bonus by period ({{$lastCalculatedSalary}} - {{Date::now()->format('d M Y')}}): {{$bonusByPeriod}} BYN</span>
             </div>
 
-            <form action="/kpi-results-save/{{$employee->employee_id}}" method="POST" id="kpi-form">
+            <form action="/salary-save/{{$employee->employee_id}}" method="POST" id="salary-form">
                 @csrf
-                @foreach ($kpis as $kpi)
-                    <div class="form-group">
-                        <label>
-                            {{ $kpi->name }}
-                            <input type="number" step="1" min="0" max="100" class="form-control" name="{{ $kpi->kpi_id }}" value="0">
-                        </label>
-                    </div>
-                @endforeach
+
+                <div class="form-group">
+                    <label>
+                        Working hours
+                        <input type="number" max="9999" min="0" step="1" class="form-control" name="workingHours" id="workingHours" value="0">
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        Sick hours
+                        <input type="number" max="9999" min="0" step="1" class="form-control" name="sickDays" id="sickDays" value="0">
+                    </label>
+                </div>
 
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
-
-
-        <script>
-            document.getElementById('kpi-form').addEventListener('submit', function (event) {
-                const daysSinceLastCalculation = {{ $daysSinceLastCalculation }};
-
-                if (daysSinceLastCalculation === 0) {
-                    event.preventDefault();
-                    $('#infoModal-text').text(`Нельзя рассчитать премию дважды за день.`)
-                    $('#infoModal').modal('show');      
-                    return;
-                }
-            });
-        </script>
     </body>
+
+    <script>
+        document.getElementById('salary-form').addEventListener('submit', function (event) {
+            const daysSinceLastCalculation = {{ $daysSinceLastCalculation }};
+            const maxHours = daysSinceLastCalculation * 8;
+
+            if (daysSinceLastCalculation === 0) {
+                event.preventDefault();
+                $('#infoModal-text').text(`Нельзя рассчитать зарплату дважды за день.`)
+                $('#infoModal').modal('show');
+                return;
+            }
+
+            const workingHours = parseInt(document.getElementById('workingHours').value) || 0;
+            const sickDays = parseInt(document.getElementById('sickDays').value) || 0;
+
+            const sickHours = sickDays * 8;
+            const totalHours = workingHours + sickHours;
+
+            if (totalHours > maxHours) {
+                event.preventDefault();
+                $('#infoModal-text').text(`Сумма рабочих часов и часов больничных не должна превышать ${maxHours} часов за прошедший период.`)
+                $('#infoModal').modal('show');
+                return;
+            }
+        });
+    </script>
 </html>

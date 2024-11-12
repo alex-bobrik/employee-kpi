@@ -12,22 +12,22 @@
                     @csrf
                     <div>
                         <label for="employee_firstname">Firstname</label>
-                        <input type="text" class="form-control" name="firstname" required id="employee_firstname">
+                        <input type="text" class="form-control" name="firstname" maxlength="50" required id="employee_firstname">
                     </div>
 
                     <div>
                         <label for="employee_lastname">Lastname</label>
-                        <input type="text" class="form-control" name="lastname" required id="employee_lastname">
+                        <input type="text" class="form-control" name="lastname" maxlength="50" required id="employee_lastname">
                     </div>
 
                     <div>
                         <label for="employee_department">Department</label>
-                        <input type="text" class="form-control" name="department" required id="employee_department">
+                        <input type="text" class="form-control" name="department" maxlength="50" required id="employee_department">
                     </div>
 
                     <div>
                         <label for="employee_base_value">Base Value</label>
-                        <input type="number" min="0.1" step="0.1" class="form-control" name="base_value" required id="employee_base_value">
+                        <input type="number" min="1" step="0.1" max="999" class="form-control" name="base_value" required id="employee_base_value">
                     </div>
 
                     

@@ -36,6 +36,8 @@
 
         <!-- Chart.js -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 
 
 
@@ -74,12 +76,16 @@
                     <span><b>{{$employee->lastname}}</b></span>
                 </div>
                 <div class="employee-work-info">
+                    @if ($isAdmin)
                     <p>Base Value: {{$employee->base_value}}</p>
+                    @endif
                     <p>Department: {{$employee->department}}</p>
-                    <p>Avg KPI: {{$employee->averageKpi()}}</p>
+                    <p>Avg KPI: {{number_format($employee->averageKpi(), 1)}}%</p>
                 </div>
                 <div class="employee-actions">
                 <a href="/kpi-results-new/{{$employee->employee_id}}" class="btn btn-primary">New KPI</a>
+                <a href="/salary-new/{{$employee->employee_id}}" class="btn btn-primary">New Salary</a>
+
 
 
                 </div>
@@ -87,8 +93,11 @@
             </div>
             <div class="employee-kpi-chart">
                 <canvas id="bonusChart" width="400" height="200"></canvas>
+                <button id="downloadPng-bonus" class="btn btn-secondary">Download PNG</button>
                 <br>
                 <canvas id="kpiChart" width="400" height="200"></canvas>
+                <button id="downloadPng" class="btn btn-secondary">Download PNG</button>
+
             </div>
             <br>
             <div class="employee-kpi">
@@ -135,22 +144,14 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                // Данные из вашего PHP-метода getGroupedBonus
-                // const data = [
-                //     { "date_measured": "2024-05-16", "total_bonus": 25.50 },
-                //     { "date_measured": "2024-05-29", "total_bonus": 25.05 }
-                // ];
-
                 const data = {!! json_encode($employee->getGroupedBonus()) !!};
-        
-                // Преобразуем данные для использования в Chart.js
+    
                 const labels = data.map(item => item.date_measured);
                 const bonuses = data.map(item => item.total_bonus);
-        
-                // Настройка данных для графика
+    
                 const ctx = document.getElementById('bonusChart').getContext('2d');
                 const bonusChart = new Chart(ctx, {
-                    type: 'bar', // или 'bar' для столбчатого графика
+                    type: 'bar',
                     data: {
                         labels: labels,
                         datasets: [{
@@ -168,6 +169,14 @@
                             }
                         }
                     }
+                });
+    
+                // Экспорт в PNG
+                document.getElementById('downloadPng-bonus').addEventListener('click', function() {
+                    const link = document.createElement('a');
+                    link.href = bonusChart.toBase64Image();
+                    link.download = 'bonus-chart.png';
+                    link.click();
                 });
             });
         </script>
@@ -242,6 +251,14 @@
                 }
             }
         });
+
+        // Экспорт в PNG
+        document.getElementById('downloadPng').addEventListener('click', function() {
+            const link = document.createElement('a');
+            link.href = kpiChart.toBase64Image();
+            link.download = 'kpi-chart.png';
+            link.click();
+        });
     });
 </script>
 
@@ -259,11 +276,7 @@
             "aaSorting": [],
             paging: true,
             scrollCollapse: true,
-            scrollY: '500px',
-            columnDefs: [{
-                orderable: false,
-                targets: [5],
-            }]
+            scrollY: '500px'
         });
     });
 

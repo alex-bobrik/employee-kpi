@@ -50,9 +50,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(EmployeeKpiResult::class, 'user_id', 'user_id');
     }
-
-    // public static function getById($userId)
-    // {
-    //     return User::where('user_id', $userId)->get()[0];
-    // }
 }

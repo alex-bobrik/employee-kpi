@@ -12,7 +12,7 @@
                     @csrf
                     <div>
                         <label for="kpi_name">Name</label>
-                        <input type="text" class="form-control" name="name" required id="kpi_name">
+                        <input type="text" class="form-control" name="name" maxlength="50" required id="kpi_name">
                     </div>
 
                     <div>

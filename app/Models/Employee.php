@@ -24,6 +24,11 @@ class Employee extends Model
         return $this->hasMany(EmployeeKpiResult::class, 'employee_id', 'employee_id');
     }
 
+    public function salaryResults()
+    {
+        return $this->hasMany(EmployeeSalaryResults::class, 'employee_id', 'employee_id');
+    }
+
     public function averageKpi()
     {
         return $this->kpiResults()->avg('kpi_value') ?? 0;
@@ -44,15 +49,12 @@ class Employee extends Model
     }
 
     public function getKpiResultsArray()
-{
-    return $this->kpiResults()
-                ->join('kpis', 'employee_kpi_results.kpi_id', '=', 'kpis.kpi_id')
-                ->selectRaw('kpis.name as kpi_name, avg(employee_kpi_results.kpi_value) as avg_kpi_value, employee_kpi_results.date_measured')
-                ->groupBy('employee_kpi_results.date_measured', 'kpis.name')
-                ->get()
-                ->toArray();
-}
-
-
-
+    {
+        return $this->kpiResults()
+                    ->join('kpis', 'employee_kpi_results.kpi_id', '=', 'kpis.kpi_id')
+                    ->selectRaw('kpis.name as kpi_name, avg(employee_kpi_results.kpi_value) as avg_kpi_value, employee_kpi_results.date_measured')
+                    ->groupBy('employee_kpi_results.date_measured', 'kpis.name')
+                    ->get()
+                    ->toArray();
+    }
 }

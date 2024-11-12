@@ -26,10 +26,6 @@ class SessionController extends Controller
             'text' => 'Wrong creds',
             'status' => 'danger'
         ]);
-
-        // throw ValidationException::withMessages([
-        //     'username' => [trans('auth.failed')],
-        // ]);
     }
 
     public function logout(Request $request)
