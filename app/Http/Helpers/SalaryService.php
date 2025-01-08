@@ -13,7 +13,8 @@ class SalaryService {
     public function calculateSalary($employee_id, float $baseValue, int $workingHours, int $sickHours)
     {
         $lastCalculatedSalary = self::getLastCalculatedSalary($employee_id);
-        $bonusBySalaryPeriod = self::getBonusBySalaryPeriod($employee_id, $lastCalculatedSalary);
+        $lastSalaryDate = $lastCalculatedSalary ? $lastCalculatedSalary->date_measured : Carbon::now()->subDays(30)->toDateString();
+        $bonusBySalaryPeriod = self::getBonusBySalaryPeriod($employee_id, $lastSalaryDate);
 
         $total = ($baseValue * $workingHours) + (self::SICK_COEFF * $sickHours) + $bonusBySalaryPeriod;
 
@@ -26,16 +27,12 @@ class SalaryService {
             ->where('employee_id', $employee_id)
             ->first();
 
-        if ($lastSalary) {
-            return $lastSalary->date_measured;
-        }
-
-        return Carbon::now()->subDays(30)->toDateString();
+        return $lastSalary;
     }
 
-    public function getBonusBySalaryPeriod($employee_id, $lastCalculatedSalary)
+    public function getBonusBySalaryPeriod($employee_id, $lastCalculatedSalaryDate)
     {
-        $lastCalculated = Carbon::parse($lastCalculatedSalary);
+        $lastCalculated = Carbon::parse($lastCalculatedSalaryDate);
 
         $kpiResults = EmployeeKpiResult::where('employee_id', $employee_id)
             ->whereBetween('date_measured', [$lastCalculated, Carbon::now()])

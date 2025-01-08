@@ -18,6 +18,7 @@ class EmployeeSalaryResults extends Model
         'bonus',
         'total',
         'date_measured',
+        'from_measured',
     ];
 
     public function employee()

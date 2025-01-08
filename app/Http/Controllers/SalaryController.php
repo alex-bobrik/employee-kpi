@@ -21,16 +21,17 @@ class SalaryController extends Controller
     {
         $employee = Employee::findOrFail($employeeId);
 
-        $lastCalculatedSalary = Carbon::parse($this->salaryService->getLastCalculatedSalary($employeeId));
+        $lastCalculatedSalary = $this->salaryService->getLastCalculatedSalary($employeeId);
+        $lastCalculatedDate = $lastCalculatedSalary ? Carbon::parse($lastCalculatedSalary->date_measured) : Carbon::now()->subDays(30);
         $currentDate = Carbon::now();
 
-        $daysSinceLastCalculation = $lastCalculatedSalary->diffInDays($currentDate);
+        $daysSinceLastCalculation = $lastCalculatedDate->diffInDays($currentDate);
 
-        $bonusByPeriod = $this->salaryService->getBonusBySalaryPeriod($employeeId, $lastCalculatedSalary);
+        $bonusByPeriod = $this->salaryService->getBonusBySalaryPeriod($employeeId, $lastCalculatedDate);
 
         return view('salary.index', [
             'employee' => $employee,
-            'lastCalculatedSalary' => $lastCalculatedSalary->format('d M Y'),
+            'lastCalculatedSalary' => $lastCalculatedDate->format('d M Y'),
             'bonusByPeriod' => $bonusByPeriod,
             'daysSinceLastCalculation' => $daysSinceLastCalculation,
         ]);
@@ -46,7 +47,8 @@ class SalaryController extends Controller
         $sickHours = (float) $requestData['sickDays'] * 8;
 
         $lastCalculatedSalary = $this->salaryService->getLastCalculatedSalary($employeeId);
-        $bonusByPeriod = $this->salaryService->getBonusBySalaryPeriod($employeeId, $lastCalculatedSalary);
+        $lastSalaryDate = $lastCalculatedSalary ? $lastCalculatedSalary->date_measured : Carbon::now()->subDays(30);
+        $bonusByPeriod = $this->salaryService->getBonusBySalaryPeriod($employeeId, $lastSalaryDate);
 
         $totalSalary = $baseValue * $workingHours + $this->salaryService::SICK_COEFF * $sickHours + $bonusByPeriod;
 
@@ -57,13 +59,37 @@ class SalaryController extends Controller
             'bonus' => $bonusByPeriod,
             'total' => $totalSalary,
             'date_measured' => Carbon::now(),
+            'from_measured' => Carbon::parse($lastSalaryDate)->format('Y-m-d'),
         ];
 
-        EmployeeSalaryResults::create($salaryData);
+        $salaryModel = EmployeeSalaryResults::create($salaryData);
 
+        return redirect()->route("salary.payslip", 
+        ['salaryId' => $salaryModel->id])->with("message", [
+            'text' => 'Payslip created',
+            'status' => 'success'
+        ]);
+    }
 
-        return redirect()->route("employeeProfile", ['id' => $employeeId])->with("message", [
-            'text' => 'Salary added',
+    public function payslip($salaryId)
+    {
+        $salaryModel = EmployeeSalaryResults::findOrFail($salaryId);
+        $employee = Employee::findOrFail($salaryModel->employee_id);
+
+        return view('salary.payslip', [
+            'employee' => $employee,
+            'salaryModel' => $salaryModel,
+        ]);
+    }
+
+    public function delete(Request $request)
+    {
+        if($salaryResult = EmployeeSalaryResults::find($request->get('salary_delete_id'))) {
+            $salaryResult->delete();
+        }
+
+        return redirect()->route("employeeProfile", ['id' => $request->get('salary_employee_id')])->with("message", [
+            'text' => 'Salary result deleted',
             'status' => 'success'
         ]);
     }

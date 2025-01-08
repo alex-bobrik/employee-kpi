@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="updateManagerModalTitle">Update</h5>
+                <h5 class="modal-title" id="updateManagerModalTitle">Обновить</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -10,13 +10,13 @@
             <form action="{{ route('update-manager') }}" method="post" id="updateManagerForm">
                 <div class="modal-body">
                     @csrf
-                    <div>
-                        <label for="username">Username</label>
+                    <div class="form-group">
+                        <label for="username">Имя пользователя</label>
                         <input type="text" class="form-control" name="username" required id="username">
                     </div>
 
-                    <div>
-                        <label for="password">New Password</label>
+                    <div class="form-group">
+                        <label for="password">Новый пароль</label>
                         <input type="password" class="form-control" name="password" required id="password">
                     </div>
                     
@@ -27,10 +27,10 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                        Cancel
+                        Отмена
                     </button>
                     <button type="submit" class="btn btn-primary">
-                        Save
+                        Сохранить
                     </button>
                 </div>
             </form>

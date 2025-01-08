@@ -9,7 +9,7 @@
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('employeeList') }}">
-                    Employee
+                    Сотрудники
                 </a>
             </li>
             <li class="nav-item">
@@ -20,7 +20,7 @@
             @if (auth()->user()->role == 'admin' )
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('managerList') }}">
-                    Managers
+                    Менеджеры
                 </a>
             </li>
             @endif
@@ -29,7 +29,7 @@
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
                 <a class="nav-link" href="{{route('logout')}}">
-                    Logout
+                    Выйти
                 </a>
             </li>
         </ul>

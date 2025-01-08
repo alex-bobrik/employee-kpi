@@ -66,20 +66,25 @@
                     </button>
                 </div>
             @endif
-            <button
+            <div style="margin-bottom: 65px">
+                <h1>Менеджеры</h1>
+                <button
+                        style="float: right"
                         type="button"
                         class="btn btn-primary add-wish-btn"
                         data-toggle="modal"
                         data-target="#updateManagerModal"
                         onClick="resetForm()"
                     >
-                        Add new manager
+                        Новый менеджер..
                     </button>
+            </div>
+            
             <table class="table table-striped" id="employeeTable">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Actions</th>
+                        <th>Имя пользователя</th>
+                        <th>Действия</th>
                     </tr>
                 </thead>
                 <tbody>

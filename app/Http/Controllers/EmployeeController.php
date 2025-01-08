@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
 {
@@ -38,12 +39,27 @@ class EmployeeController extends Controller
 
     public function update(Request $request)
     {
-        if (        $employee = Employee::find($request->get('employee_id'))) {
-            $employee->update($request->all());
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imagePath = $image->store('employee_images', 'public');
+        }
 
+
+        if ($employee = Employee::find($request->get('employee_id'))) {
+            if ($employee->image_path) {
+                Storage::disk('public')->delete($employee->image_path);
+            }
+    
+            $employee->image_path = $imagePath;
+            $employee->update($request->all());
         } else {
             $employee = Employee::create($request->all());
-        $employee->save();
+            if ($employee->image_path) {
+                Storage::disk('public')->delete($employee->image_path);
+            }
+    
+            $employee->image_path = $imagePath;
+            $employee->save();
         }
 
         return redirect()->route("employeeList")->with("message", [

@@ -59,26 +59,33 @@
                     </button>
                 </div>
             @endif
-            @if ($isAdmin)
+            <div style="margin-bottom: 65px">
+                <h1>Финансовые модели KPI</h1>
+                @if ($isAdmin)
+
                 <button
+                        style="float: right"
                         type="button"
                         class="btn btn-primary add-wish-btn"
                         data-toggle="modal"
                         data-target="#updateKpiModal"
                         onClick="resetForm()"
                     >
-                        Add new KPI
+                        Новый KPI..
                     </button>
-            @endif
+                    @endif
+
+            </div>
+                
             
             <table class="table table-striped" id="kpiTable">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Weight</th>
+                        <th>Название</th>
+                        <th>Описание</th>
+                        <th>Вес</th>
                         @if ($isAdmin)
-                        <th>Actions</th>
+                        <th>Действия</th>
                         @endif
                     </tr>
                 </thead>

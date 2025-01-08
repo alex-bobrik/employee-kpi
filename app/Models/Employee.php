@@ -16,7 +16,8 @@ class Employee extends Model
         'firstname',
         'lastname',
         'department',
-        'base_value'
+        'base_value',
+        'image_path'
     ];
 
     public function kpiResults()
@@ -57,4 +58,20 @@ class Employee extends Model
                     ->get()
                     ->toArray();
     }
+
+    public function getSalaryResultsArray()
+    {
+        return $this->salaryResults()
+                    ->selectRaw(
+                        'employee_salary_results.id,
+                        employee_salary_results.date_measured, 
+                         employee_salary_results.working_hours as total_working_hours, 
+                         employee_salary_results.sick_hours as total_sick_hours, 
+                         employee_salary_results.bonus as total_bonus, 
+                         employee_salary_results.total as total_salary'
+                    )
+                    ->get()
+                    ->toArray();
+    }
+    
 }

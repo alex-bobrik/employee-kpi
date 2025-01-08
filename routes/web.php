@@ -47,10 +47,13 @@ Route::group(['middleware' => 'auth'], function () {
     
     Route::get('kpi-results-new/{employeeId}', [\App\Http\Controllers\EmployeeKpiResultController::class, 'index'])->name('newKpiResult');
     Route::post('kpi-results-save/{employeeId}', [\App\Http\Controllers\EmployeeKpiResultController::class, 'store'])->name('kpiResult.store');
-    Route::post('/delete-result', [\App\Http\Controllers\EmployeeKpiResultController::class, 'delete'])->name('delete-result');
+    Route::post('/delete-result', action: [\App\Http\Controllers\EmployeeKpiResultController::class, 'delete'])->name('delete-result');
 
     Route::get('salary-new/{employeeId}', [\App\Http\Controllers\SalaryController::class, 'index'])->name('newSalary');
     Route::post('salary-save/{employeeId}', [\App\Http\Controllers\SalaryController::class, 'store'])->name('salary.store');
+    Route::get('salary-payslip/{salaryId}', [\App\Http\Controllers\SalaryController::class, 'payslip'])->name('salary.payslip');
+    Route::post('/delete-salary-result', action: [\App\Http\Controllers\SalaryController::class, 'delete'])->name('salary.delete');
+
 
 
 });

@@ -15,7 +15,7 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" referrerpolicy="">
 
         <!-- JQuery -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -53,37 +53,53 @@
 
         @extends('layouts.infoModal');
 
-        <div class="container">
+        <div class="container" style="max-width: 1200px; font-family: 'Arial', sans-serif;">
             @if(Session::has('message'))
-                <div class="alert alert-{{Session::get('message')['status']}} alert-dismissible fade show" role="alert">
+                <div class="alert alert-{{Session::get('message')['status']}} alert-dismissible fade show" role="alert" style="border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                     <span>{{ Session::get('message')['text'] }}</span>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="font-size: 1.5rem;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
             @endif
-            <div class="employee-info">
-                New KPI Results for <b>{{ $employee->firstname }} {{ $employee->lastname }}</b>
+        
+            <div class="breadcrumbs" style="margin-bottom: 15px; font-size: 1.1rem; color: #007bff;">
+                <span>
+                    <a href="{{url()->previous()}}" style="text-decoration: none; color: inherit; font-weight: bold;">
+                        < &nbsp;<b>{{ $employee->firstname }} {{ $employee->lastname }}</b>
+                    </a>
+                </span>
             </div>
-
-            <div class="preview-info">
-                <span>Last KPI Calculcated: {{$lastCalculatedBonus}} ({{$daysSinceLastCalculation}} days ago)</span>
+        
+            <div class="employee-info" style="font-size: 1.3rem; font-weight: bold; margin-bottom: 25px; color: #333;">
+                Новый расчет премии для <b>{{ $employee->firstname }} {{ $employee->lastname }}</b>
             </div>
-
+        
+            <div class="preview-info" style="font-size: 1.1rem; color: #777; margin-bottom: 20px;">
+                <span>Последний расчет премии: {{$lastCalculatedBonus}} ({{$daysSinceLastCalculation}} дней назад)</span>
+            </div>
+        
             <form action="/kpi-results-save/{{$employee->employee_id}}" method="POST" id="kpi-form">
                 @csrf
-                @foreach ($kpis as $kpi)
-                    <div class="form-group">
-                        <label>
-                            {{ $kpi->name }}
-                            <input type="number" step="1" min="0" max="100" class="form-control" name="{{ $kpi->kpi_id }}" value="0">
-                        </label>
-                    </div>
-                @endforeach
-
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <div class="row" style="gap: 15px;">
+                    @foreach ($kpis as $kpi)
+                        <div class="col-md-3 col-sm-4" style="margin-bottom: 20px;">
+                            <div class="form-group">
+                                <label style="font-size: 1.1rem; color: #555; font-weight: 500;">
+                                    {{ $kpi->name }}
+                                    <input type="number" step="1" min="0" max="100" class="form-control" name="{{ $kpi->kpi_id }}" value="0" style="border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                </label>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+        
+                <button type="submit" class="btn btn-primary" style="font-size: 1.1rem; padding: 10px 20px; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    Подтвердить
+                </button>
             </form>
         </div>
+        
 
 
         <script>

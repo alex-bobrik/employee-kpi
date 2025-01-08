@@ -67,34 +67,48 @@
                     </button>
                 </div>
             @endif
-            @if ($isAdmin)
+            <div style="margin-bottom: 65px">
+                <h1>Сотрудники</h2>
+                    @if ($isAdmin)
+
                 <button
+                        style="float: right"
                         type="button"
-                        class="btn btn-primary add-wish-btn"
+                        class="btn btn-primary mb-3 add-wish-btn"
                         data-toggle="modal"
                         data-target="#updateEmployeeModal"
                         onClick="resetForm()"
                     >
-                        Add new employee
+                        Новый сотрудник..
                     </button>
-            @endif
+                    @endif
+
+            </div>
             
             <table class="table table-striped" id="employeeTable">
                 <thead>
                     <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Department</th>
+                        <th>Фото</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Отдел</th>
                         @if ($isAdmin)
-                        <th>Base Value</th>
+                        <th>Базовая ставка, BYN</th>
                         @endif
-                        <th>Avg KPI</th>
-                        <th>Actions</th>
+                        <th>Средний KPI</th>
+                        <th>Действия</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($employeeList as $employee)
                         <tr>
+                            <td>
+                                @if($employee->image_path)
+                                    <img src="{{ asset('storage/' . $employee->image_path) }}" alt="Фото сотрудника" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+                                @else
+                                    <span>Нет фото</span>
+                                @endif
+                            </td>
                             <td>{{ $employee->firstname }}</td>
                             <td>{{ $employee->lastname }}</td>
                             <td>{{ $employee->department }}</td>
@@ -103,13 +117,13 @@
                             @endif
                             <td>{{ number_format($employee->averageKpi(), 1) }}%</td>
                             <td>
-                                <a href="{{ route('employeeProfile', $employee->employee_id) }}">
-                                    Profile
+                                <a class="btn btn-warning btn-sm" href="{{ route('employeeProfile', $employee->employee_id) }}">
+                                    Профиль
                                 </a>
                                 @if ($isAdmin)
                                     <button
                                     value="{{$employee->employee_id}}"
-                                    class="btn btn-info edit-btn"
+                                    class="btn btn-info btn-sm edit-btn"
                                     data-toggle="modal"
                                     data-target="#updateEmployeeModal"
                                     onClick="setDataToModal({{$employee}})"
@@ -117,7 +131,7 @@
                                     <i class="fa fa-pencil"></i>
                                 </button>
                                 <button
-                                        class="btn btn-danger"
+                                        class="btn btn-danger btn-sm"
                                         data-toggle="modal"
                                         data-target="#deleteEmployeeModal"
                                         onClick="setDeleteId({{$employee->employee_id}})"
@@ -142,6 +156,10 @@
                     paging: true,
                     scrollCollapse: true,
                     scrollY: '500px',
+                    columnDefs: [{
+                        orderable: false,
+                        targets: [0]
+                    }]
                 });
             });
     
@@ -158,6 +176,12 @@
         $('#employee_department').val(employee.department);
         $('#employee_base_value').val(employee.base_value);
         $('#employee_id').val(employee.employee_id);
+
+        if (employee.image_path) {
+            $('#employee_image_preview').attr('src', '/storage/' + employee.image_path).show();
+        } else {
+            $('#employee_image_preview').hide();
+        }
     }
 
     function resetForm() {

@@ -53,45 +53,62 @@
 
         @extends('layouts.infoModal');
 
-        <div class="container">
+        <div class="container" style="max-width: 1200px; font-family: 'Roboto', sans-serif;">
             @if(Session::has('message'))
-                <div class="alert alert-{{Session::get('message')['status']}} alert-dismissible fade show" role="alert">
+                <div class="alert alert-{{Session::get('message')['status']}} alert-dismissible fade show" role="alert" style="border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                     <span>{{ Session::get('message')['text'] }}</span>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="font-size: 1.5rem;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
             @endif
-            <div class="employee-info">
-                New Salary for <b>{{ $employee->firstname }} {{ $employee->lastname }}</b>
+        
+            <div class="breadcrumbs" style="margin-bottom: 15px; font-size: 1.1rem; color: #007bff;">
+                <span>
+                    <a href="{{url()->previous()}}" style="text-decoration: none; color: inherit; font-weight: bold;">
+                        < &nbsp;<b>{{ $employee->firstname }} {{ $employee->lastname }}</b>
+                    </a>
+                </span>
             </div>
-
-            <div class="preview-info">
-                <span>Last Salary Date: {{$lastCalculatedSalary}} ({{$daysSinceLastCalculation}} days ago)</span>
+        
+            <div class="employee-info" style="font-size: 1.3rem; font-weight: bold; margin-bottom: 25px; color: #333;">
+                Расчет зарплаты для <b>{{ $employee->firstname }} {{ $employee->lastname }}</b>
+            </div>
+        
+            <div class="preview-info" style="font-size: 1.1rem; color: #777; margin-bottom: 20px;">
+                <span>Последняя дата расчета: {{$lastCalculatedSalary}} ({{$daysSinceLastCalculation}} дней назад)</span>
                 <br>
-                <span>Bonus by period ({{$lastCalculatedSalary}} - {{Date::now()->format('d M Y')}}): {{$bonusByPeriod}} BYN</span>
+                <span>Премия за период ({{$lastCalculatedSalary}} - {{Date::now()->format('d M Y')}}): {{$bonusByPeriod}} BYN</span>
             </div>
-
+        
             <form action="/salary-save/{{$employee->employee_id}}" method="POST" id="salary-form">
                 @csrf
-
-                <div class="form-group">
-                    <label>
-                        Working hours
-                        <input type="number" max="9999" min="0" step="1" class="form-control" name="workingHours" id="workingHours" value="0">
-                    </label>
+                <div class="row" style="gap: 15px;">
+                    <div class="col-md-3 col-sm-4" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label style="font-size: 1.1rem; color: #555; font-weight: 500;">
+                                Количество рабочих часов
+                                <input type="number" max="9999" min="0" step="1" class="form-control" name="workingHours" id="workingHours" value="0" style="border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                            </label>
+                        </div>
+                    </div>
+        
+                    <div class="col-md-3 col-sm-4" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label style="font-size: 1.1rem; color: #555; font-weight: 500;">
+                                Количество больничных дней
+                                <input type="number" max="9999" min="0" step="1" class="form-control" name="sickDays" id="sickDays" value="0" style="border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                            </label>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label>
-                        Sick hours
-                        <input type="number" max="9999" min="0" step="1" class="form-control" name="sickDays" id="sickDays" value="0">
-                    </label>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Submit</button>
+        
+                <button type="submit" class="btn btn-primary" style="font-size: 1.1rem; padding: 10px 20px; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    Подтвердить
+                </button>
             </form>
         </div>
+        
     </body>
 
     <script>
